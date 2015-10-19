@@ -8,7 +8,13 @@ body {
     overflow: auto; }
 
 .wrapper {
+<<<<<<< HEAD
   padding: 15px; }
+=======
+  padding: 15px;
+  max-width: 1200px;
+  margin: 0 auto; }
+>>>>>>> 1a8329ffad6ccd9ffbb21ab60d97e3457b88b373
 
 #month {
   font-size: 2rem;
