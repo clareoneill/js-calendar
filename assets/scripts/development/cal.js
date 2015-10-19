@@ -64,7 +64,7 @@ var t,
       },
       
       createCal: function() {
-        d.month.innerHTML = s.niceMonth;
+        d.month.innerHTML = s.niceMonth + ' ' + s.year;
 
         var day = 1;
         // create the weeks
