@@ -23,6 +23,7 @@ var t,
       },
       
       divs: {
+        month: document.getElementById('month'),
         cal: document.getElementById('calendar'),
         days: ''
       },
@@ -49,7 +50,7 @@ var t,
         s.monthLength = a.daysInMonths[s.month];
         // leap year
         if ( s.month == 1 ) { // February only!
-          if( ( s.year % 4 == 0 && s.year % 100 != 0 ) || s.year % 40 == 0 ){
+          if( ( s.year % 4 === 0 && s.year % 100 !== 0 ) || s.year % 40 === 0 ){
             s.monthLength = 29;
           }
         }
@@ -63,8 +64,9 @@ var t,
       },
       
       createCal: function() {
+        d.month.innerHTML = s.niceMonth;
+
         var day = 1;
-        
         // create the weeks
         for( var i = 0; i < 9; i++ ) {
           s.calHTML += '<div class="row">';
@@ -72,23 +74,29 @@ var t,
           // create the days
           for( var j = 0; j < 7; j++ ) {
             
-            if( day === s.date ) {
-              s.calHTML += '<div class="item" id="today">';
-            } else {
-              s.calHTML += '<div class="item">';
-            }
-            s.calHTML += '<span class="bg"></span>';
-            s.calHTML += '<span class="num">';
-
             // only add an actual date if it's on or after the first day of the month
             if( day <= s.monthLength && ( i > 0 || j >= s.firstDay ) ) {
               
+              if( day === s.date ) {
+                s.calHTML += '<div class="item" id="today" data-dow="' + j + '">';
+              } else {
+                s.calHTML += '<div class="item" data-dow="' + j + '">';
+              }
+              s.calHTML += '<span class="bg"></span>';
+              s.calHTML += '<span class="num">';
               s.calHTML += day;
               day++;
+              s.calHTML += '</span>';
+              s.calHTML += '</div>';
+
+            } else {
+              s.calHTML += '<div class="item hidden-vert">';
+              s.calHTML += '<span class="bg"></span>';
+              s.calHTML += '<span class="num"></span>';
+              s.calHTML += '</div>';
             }
 
-            s.calHTML += '</span>';
-            s.calHTML += '</div>';
+          
           }
           s.calHTML += '</div>';
 
@@ -103,12 +111,12 @@ var t,
         
         // grab all the items in a variable
         // then update the calendar
-        // then set interval to update calendar every minute
+        // then set interval to update calendar every 15 minutes
         d.days = document.getElementsByClassName('item');
         t.updateCal();
         setInterval(function() {
           t.updateCal();
-        }, 60 * 1000); // 60 * 1000 milsec
+        }, 60 * 1000 * 15 ); // 60 * 1000 milsec * 15
         
       },
       
@@ -138,14 +146,17 @@ var t,
               // then update the height based on how close to midnight it is
               } else if ( boxDay === s.date ) {
                 bg[b].classList.add('bg--today');
-                bg[b].style.height = t.minutesUnilMidnight() + '%';
+                bg[b].style.height = t.minutesUntilMidnight() + '%';
+
+                console.log(t.minutesUntilMidnight());
               }
             }
           }
         }
       }, 
 
-      minutesUnilMidnight: function() {
+
+      minutesUntilMidnight: function() {
         var midnight = new Date(),
             totalMinutes = 24*60,
             minutesUntil,
