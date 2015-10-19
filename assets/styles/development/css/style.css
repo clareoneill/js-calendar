@@ -3,7 +3,7 @@ body {
   margin: 0;
   padding: 0;
   min-width: 320px;
-  overflow: hidden; }
+  background-color: #ccc; }
   body.active {
     overflow: auto; }
 
@@ -17,7 +17,8 @@ body {
   position: relative;
   border: 5px solid #000;
   margin: 0;
-  padding: 15px; }
+  padding: 15px;
+  background-color: #fff; }
   @media (min-width: 600px) {
     #month {
       font-size: 4rem;
@@ -41,6 +42,7 @@ body {
     color: #ccc; }
 
 #calendar {
+  background-color: #fff;
   border-left: 5px solid #000; }
 
 .hidden-vert {
