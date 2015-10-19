@@ -3,6 +3,11 @@ body {
   margin: 0;
   padding: 0;
   min-width: 320px;
+  overflow: hidden;
+
+  &.active {
+    overflow: auto;
+  }
 }
 
 .wrapper {
@@ -13,12 +18,38 @@ body {
   font-size: 2rem;
   font-weight: 900;
   text-align: center;
+  position: relative;
   border: 5px solid #000;
   margin: 0;
   padding: 15px;
 
   @media(min-width: 600px) {
     font-size: 4rem;
+    padding: 30px 15px;
+  }
+}
+
+.arrow {
+  line-height: 1;
+  color: #000;
+  text-decoration: none;
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: all 100ms ease;
+
+  &[data-dir="next"] {
+    left: auto;
+    right: 15px;
+  }
+
+  &:hover {
+    color: #ccccff;
+  }
+
+  &:focus {
+    color: #ccc;
   }
 }
 
@@ -171,5 +202,24 @@ body {
       height: 80%;
       background-color: #ccccff;
     }
+  }
+}
+
+#show {
+  font-size: 2rem;
+  font-weight: 900;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: #D6FFEB;
+
+  @media(min-width: 600px) {
+    font-size: 4rem;
   }
 }

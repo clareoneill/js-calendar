@@ -8,9 +8,12 @@ var t,
         daysInMonths: [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
       },
        
-      settings: {
-        now: '',
-        nowTime: '',
+      calSettings: {
+        NOW: new Date(),
+        NOWmonth: '',
+        NOWyear: '',
+        displayNow: '',
+        displayNowTime: '',
         date: '',
         day: '',
         niceDay: '',
@@ -19,104 +22,129 @@ var t,
         year: '',
         firstDay: '',
         monthLength: '',
-        calHTML: ''
+        calHTML: '',
+        display: false,
+        nextMonth: '',
+        nextYear: '',
+        displayOffset: 0
       },
       
       divs: {
-        month: document.getElementById('month'),
-        cal: document.getElementById('calendar'),
-        days: ''
+        body: document.getElementsByTagName("BODY")[0],
+        calTitle: document.getElementById('title'),
+        calAppend: document.getElementById('append'),
+        days: '',
+        show: document.getElementById('show'),
+        arrows: document.getElementsByClassName('arrow')
       },
       
       init: function() {
         t = this;
         a = t.arrays;
-        s = t.settings;
+        c = t.calSettings;
         d = t.divs;
         
+        // get today's date
+        c.displayNow = new Date();
+        c.NOWmonth = c.NOW.getMonth();
+        c.NOWyear = c.NOW.getFullYear();
+        
+        // create the calendar
+        t.createCal();
+
+        // trigger navCal function
+        t.navCal();
+      },
+      
+      createCal: function() {
         // get today's stuff
-        s.now = new Date();
-        s.nowTime = s.now.getTime();
-        s.date = s.now.getDate();
-        s.day = s.now.getDay();
-        s.month = s.now.getMonth();
-        s.year = s.now.getFullYear();
+        c.displayNowTime = c.displayNow.getTime();
+        c.date = c.NOW.getDate();
+        c.day = c.displayNow.getDay();
+        c.month = c.displayNow.getMonth();
+        c.year = c.displayNow.getFullYear();
         
         // get the first day of the month
-        s.firstDay = new Date(s.year, s.month, 1);
-        s.firstDay = s.firstDay.getDay();
+        c.firstDay = new Date(c.year, c.month, 1);
+        c.firstDay = c.firstDay.getDay();
+
+        if( c.NOWmonth === c.month && c.NOWyear === c.year ) {
+          c.displayOffset = 0;
+        } else if( (c.NOWyear === c.year && c.NOWmonth > c.month ) || c.NOWYEAR > c.year ) {
+          c.displayOffset = -1;
+        } else if( (c.NOWyear === c.year && c.NOWmonth < c.month) || c.NOWyear < c.year ) {
+          c.displayOffset = 1;
+        }
         
         // get the number of days in this month
-        s.monthLength = a.daysInMonths[s.month];
+        c.monthLength = a.daysInMonths[c.month];
         // leap year
-        if ( s.month == 1 ) { // February only!
-          if( ( s.year % 4 === 0 && s.year % 100 !== 0 ) || s.year % 40 === 0 ){
-            s.monthLength = 29;
+        if ( c.month == 1 ) { // February only!
+          if( ( c.year % 4 === 0 && c.year % 100 !== 0 ) || c.year % 40 === 0 ){
+            c.monthLength = 29;
           }
         }
         
         // convert the day and month into words
-        s.niceDay = a.days[s.day];
-        s.niceMonth = a.months[s.month];
-        
-        // create the calendar
-        t.createCal();
-      },
-      
-      createCal: function() {
-        d.month.innerHTML = s.niceMonth + ' ' + s.year;
+        c.niceDay = a.days[c.day];
+        c.niceMonth = a.months[c.month];
+
+        // set title to current month and year
+        d.calTitle.innerHTML = c.niceMonth + ' ' + c.year;
 
         var day = 1;
+        c.calHTML = '';
+
         // create the weeks
         for( var i = 0; i < 9; i++ ) {
-          s.calHTML += '<div class="row">';
+          c.calHTML += '<div class="row">';
           
           // create the days
           for( var j = 0; j < 7; j++ ) {
             
             // only add an actual date if it's on or after the first day of the month
-            if( day <= s.monthLength && ( i > 0 || j >= s.firstDay ) ) {
+            if( day <= c.monthLength && ( i > 0 || j >= c.firstDay ) ) {
               
-              if( day === s.date ) {
-                s.calHTML += '<div class="item" id="today" data-dow="' + j + '">';
+              if( day === c.date ) {
+                c.calHTML += '<div class="item" id="today" data-dow="' + j + '">';
               } else {
-                s.calHTML += '<div class="item" data-dow="' + j + '">';
+                c.calHTML += '<div class="item" data-dow="' + j + '">';
               }
-              s.calHTML += '<span class="bg"></span>';
-              s.calHTML += '<span class="num">';
-              s.calHTML += day;
+              c.calHTML += '<span class="bg"></span>';
+              c.calHTML += '<span class="num">';
+              c.calHTML += day;
               day++;
-              s.calHTML += '</span>';
-              s.calHTML += '</div>';
+              c.calHTML += '</span>';
+              c.calHTML += '</div>';
 
             } else {
-              s.calHTML += '<div class="item hidden-vert">';
-              s.calHTML += '<span class="bg"></span>';
-              s.calHTML += '<span class="num"></span>';
-              s.calHTML += '</div>';
+              c.calHTML += '<div class="item hidden-vert">';
+              c.calHTML += '<span class="bg"></span>';
+              c.calHTML += '<span class="num"></span>';
+              c.calHTML += '</div>';
             }
 
           
           }
-          s.calHTML += '</div>';
+          c.calHTML += '</div>';
 
           // stop looping after the month is done
-          if( day > s.monthLength ) {
+          if( day > c.monthLength ) {
             break;
           }
         }
         
         // append to the calendar
-        d.cal.innerHTML += s.calHTML;
+        d.calAppend.innerHTML = c.calHTML;
         
         // grab all the items in a variable
         // then update the calendar
         // then set interval to update calendar every 15 minutes
         d.days = document.getElementsByClassName('item');
         t.updateCal();
-        setInterval(function() {
+        /*setInterval(function() {
           t.updateCal();
-        }, 60 * 1000 * 15 ); // 60 * 1000 milsec * 15
+        }, 60 * 1000 * 15 ); // 60 * 1000 milsec * 15*/
         
       },
       
@@ -131,28 +159,44 @@ var t,
           // grab the date and turn into and integer
           for( var n = 0; n < num.length; n++ ) {
             var boxDay = parseInt(num[n].innerHTML);
-            // if the number div is empty (starting empty divs)
-            // assign date as 0
-            if( !boxDay ) {
-              boxDay = 0;
+            
+            if( c.displayOffset === 0 ) {
+              // if the number div is empty (starting empty divs)
+              // assign date as 0
+              if( !boxDay ) {
+                boxDay = 0;
+              }
             }
 
             // loop through the background div
             for( var b = 0; b < bg.length; b++ ) {
-              // if it's before today, set height of bg to 100%
-              if( boxDay < s.date ) {
-                bg[b].style.height = '100%';
-              // if it's today, add the bg--today class
-              // then update the height based on how close to midnight it is
-              } else if ( boxDay === s.date ) {
-                bg[b].classList.add('bg--today');
-                bg[b].style.height = t.minutesUntilMidnight() + '%';
 
-                console.log(t.minutesUntilMidnight());
+              if( c.displayOffset === 0 ) {
+                // if it's before today, set height of bg to 100%
+                if( boxDay < c.date ) {
+                  bg[b].style.height = '100%';
+                // if it's today, add the bg--today class
+                // then update the height based on how close to midnight it is
+                } else if ( boxDay === c.date ) {
+                  bg[b].classList.add('bg--today');
+                  bg[b].style.height = t.minutesUntilMidnight() + '%';
+                }
+              } else if( c.displayOffset === -1 ) {
+                bg[b].style.height = '100%';
               }
+              
             }
           }
         }
+
+        // hide loading div after 1.5 seconds
+        /*if( !c.display ) {
+          setTimeout( function() {
+            d.body.classList.add('active');
+            d.show.style.display = 'none'; 
+          }, 1500 );
+          c.display = true;
+        }*/
       }, 
 
 
@@ -171,6 +215,43 @@ var t,
         percentLeft = minutesUntil / totalMinutes * 100;
         percentDone = parseInt(100 - percentLeft);
         return ( percentDone );
+      },
+
+
+      navCal: function() {
+        for( var i = 0; i < d.arrows.length; i++ ) {
+          var arrow = d.arrows[i],
+              dir;
+
+          arrow.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            dir = this.getAttribute('data-dir');
+
+            if( dir === 'next') {
+              if( c.month === 11 ) {
+                c.nextMonth = 0;
+                c.nextYear = c.year + 1;
+              } else {
+                c.nextMonth = c.month + 1;
+                c.nextYear = c.year;
+              }
+            } else if ( dir === 'prev' ) {
+              if( c.month === 0 ) {
+                c.nextMonth = 11;
+                c.nextYear = c.year - 1;
+              } else {
+                c.nextMonth = c.month - 1;
+                c.nextYear = c.year;
+              }
+            }
+
+            // update the displayNow date
+            // create the new calendar
+            c.displayNow = new Date(c.nextYear, c.nextMonth, 1);
+            t.createCal();
+          });
+        }
       }
       
     };
