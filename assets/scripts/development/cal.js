@@ -19,8 +19,7 @@ var t,
         year: '',
         firstDay: '',
         monthLength: '',
-        calHTML: '',
-        today: false
+        calHTML: ''
       },
       
       divs: {
@@ -40,7 +39,7 @@ var t,
         s.date = s.now.getDate();
         s.day = s.now.getDay();
         s.month = s.now.getMonth();
-        s.year = s.now.getYear();
+        s.year = s.now.getFullYear();
         
         // get the first day of the month
         s.firstDay = new Date(s.year, s.month, 1);
@@ -72,18 +71,28 @@ var t,
           
           // create the days
           for( var j = 0; j < 7; j++ ) {
-            s.calHTML += '<div class="item">';
+            
+            if( day === s.date ) {
+              s.calHTML += '<div class="item" id="today">';
+            } else {
+              s.calHTML += '<div class="item">';
+            }
+            s.calHTML += '<span class="bg"></span>';
+            s.calHTML += '<span class="num">';
+
+            // only add an actual date if it's on or after the first day of the month
             if( day <= s.monthLength && ( i > 0 || j >= s.firstDay ) ) {
               
-              s.calHTML += '<span class="bg"></span><span class="num">';
               s.calHTML += day;
-              s.calHTML += '</span>';
-             
               day++;
             }
+
+            s.calHTML += '</span>';
             s.calHTML += '</div>';
           }
           s.calHTML += '</div>';
+
+          // stop looping after the month is done
           if( day > s.monthLength ) {
             break;
           }
@@ -92,7 +101,8 @@ var t,
         // append to the calendar
         d.cal.innerHTML += s.calHTML;
         
-        // update the calendar
+        // grab all the items in a variable
+        // then update the calendar
         // then set interval to update calendar every minute
         d.days = document.getElementsByClassName('item');
         t.updateCal();
@@ -103,18 +113,53 @@ var t,
       },
       
       updateCal: function() {
-        console.log(d.days);
-        
-        for( var d = 0; d < d.days.length; d++ ) {
-          var num = d.days[d].getElementsByClassName('num');
-          console.log(num);
-          /*if( num.length > 0 ) {
-            for( var n = 0; n < num.length; n++ ) {
-              console.log('num');
-            }
-          }*/
+        // loop through all the days
+        // grab the number and the background divs
+        for( var i = 0; i < d.days.length; i++ ) {
+          var num = d.days[i].getElementsByClassName('num'),
+              bg = d.days[i].getElementsByClassName('bg');
           
+          // loop through the number div
+          // grab the date and turn into and integer
+          for( var n = 0; n < num.length; n++ ) {
+            var boxDay = parseInt(num[n].innerHTML);
+            // if the number div is empty (starting empty divs)
+            // assign date as 0
+            if( !boxDay ) {
+              boxDay = 0;
+            }
+
+            // loop through the background div
+            for( var b = 0; b < bg.length; b++ ) {
+              // if it's before today, set height of bg to 100%
+              if( boxDay < s.date ) {
+                bg[b].style.height = '100%';
+              // if it's today, add the bg--today class
+              // then update the height based on how close to midnight it is
+              } else if ( boxDay === s.date ) {
+                bg[b].classList.add('bg--today');
+                bg[b].style.height = t.minutesUnilMidnight() + '%';
+              }
+            }
+          }
         }
+      }, 
+
+      minutesUnilMidnight: function() {
+        var midnight = new Date(),
+            totalMinutes = 24*60,
+            minutesUntil,
+            percentLeft,
+            percentDone;
+        midnight.setHours( 24 );
+        midnight.setMinutes( 0 );
+        midnight.setSeconds( 0 );
+        midnight.setMilliseconds( 0 );
+        minutesUntil = midnight.getTime() - new Date().getTime();
+        minutesUntil = minutesUntil / 1000 / 60;
+        percentLeft = minutesUntil / totalMinutes * 100;
+        percentDone = parseInt(100 - percentLeft);
+        return ( percentDone );
       }
       
     };
