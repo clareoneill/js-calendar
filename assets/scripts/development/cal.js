@@ -142,9 +142,9 @@ var t,
         // then set interval to update calendar every 15 minutes
         d.days = document.getElementsByClassName('item');
         t.updateCal();
-        /*setInterval(function() {
+        setInterval(function() {
           t.updateCal();
-        }, 60 * 1000 * 15 ); // 60 * 1000 milsec * 15*/
+        }, 60 * 1000 ); // 60 * 1000 milsec
         
       },
       
@@ -187,6 +187,12 @@ var t,
               
             }
           }
+        }
+
+        if( t.minutesUntilMidnight() < 300 || (t.minutesUntilMidnight() > 0 && t.minutesUntilMidnight() < 1140) ) {
+          d.body.classList.add('night');
+        } else {
+          d.body.classList.remove('night');
         }
 
         // hide loading div after 1.5 seconds

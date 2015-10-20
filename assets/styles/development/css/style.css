@@ -4,17 +4,15 @@ body {
   padding: 0;
   min-width: 320px;
   background-color: #ccc; }
-  body.active {
-    overflow: auto; }
+
+.night {
+  color: #888;
+  background-color: #282828; }
 
 .wrapper {
-<<<<<<< HEAD
-  padding: 15px; }
-=======
   padding: 15px;
   max-width: 1200px;
   margin: 0 auto; }
->>>>>>> 1a8329ffad6ccd9ffbb21ab60d97e3457b88b373
 
 #month {
   font-size: 2rem;
@@ -29,6 +27,9 @@ body {
     #month {
       font-size: 4rem;
       padding: 30px 15px; } }
+
+.night #month {
+  background-color: #444; }
 
 .arrow {
   line-height: 1;
@@ -154,6 +155,16 @@ body {
     .item .bg--today {
       height: 80%;
       background-color: #ccccff; }
+
+.night .item {
+  background-color: #444; }
+  .night .item--title,
+  .night .item::after {
+    background-color: #00293D; }
+  .night .item .bg {
+    background-color: #282828; }
+    .night .item .bg--today {
+      background-color: #3D001F; }
 
 #show {
   font-size: 2rem;

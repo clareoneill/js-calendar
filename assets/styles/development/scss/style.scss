@@ -3,12 +3,12 @@ body {
   margin: 0;
   padding: 0;
   min-width: 320px;
-  //overflow: hidden;
   background-color: #ccc;
+}
 
-  &.active {
-    overflow: auto;
-  }
+.night {
+  color: #888;
+  background-color: #282828;
 }
 
 .wrapper {
@@ -30,6 +30,12 @@ body {
   @media(min-width: 600px) {
     font-size: 4rem;
     padding: 30px 15px;
+  }
+}
+
+.night {
+  #month {
+    background-color: #444;
   }
 }
 
@@ -206,6 +212,25 @@ body {
     &--today {
       height: 80%;
       background-color: #ccccff;
+    }
+  }
+}
+
+.night {
+  .item {
+    background-color: #444;
+
+    &--title,
+    &::after {
+      background-color: #00293D;
+    }
+
+    .bg {
+      background-color: #282828;
+
+      &--today {
+        background-color: #3D001F;
+      }
     }
   }
 }
