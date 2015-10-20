@@ -7,7 +7,7 @@ body {
 }
 
 .night {
-  color: #888;
+  color: #787878;
   background-color: #282828;
 }
 
@@ -60,6 +60,16 @@ body {
 
   &:focus {
     color: #ccc;
+  }
+}
+
+.night {
+  .arrow {
+    color: #787878;
+
+    &:hover {
+      color: #3D001F;
+    }
   }
 }
 
@@ -222,7 +232,7 @@ body {
 
     &--title,
     &::after {
-      background-color: #00293D;
+      background-color: #003D3D;
     }
 
     .bg {

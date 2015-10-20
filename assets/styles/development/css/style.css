@@ -6,7 +6,7 @@ body {
   background-color: #ccc; }
 
 .night {
-  color: #888;
+  color: #787878;
   background-color: #282828; }
 
 .wrapper {
@@ -47,6 +47,11 @@ body {
     color: #ccccff; }
   .arrow:focus {
     color: #ccc; }
+
+.night .arrow {
+  color: #787878; }
+  .night .arrow:hover {
+    color: #3D001F; }
 
 #calendar {
   background-color: #fff;
@@ -160,7 +165,7 @@ body {
   background-color: #444; }
   .night .item--title,
   .night .item::after {
-    background-color: #00293D; }
+    background-color: #003D3D; }
   .night .item .bg {
     background-color: #282828; }
     .night .item .bg--today {
